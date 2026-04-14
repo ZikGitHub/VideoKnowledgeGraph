@@ -1,0 +1,17 @@
+yt-dlp
+opencv-python
+scenedetect[opencv]
+langchain
+langchain-community
+langchain-ollama
+chromadb
+sentence-transformers
+youtube-transcript-api
+fastapi
+uvicorn
+python-dotenv
+torch
+torchvision
+torchaudio
+soundfile
+numpy
