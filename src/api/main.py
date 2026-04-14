@@ -10,7 +10,7 @@ from typing import Dict
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from src.brain.graph_builder import app as graph_app
-from src.api.generators import PDFGenerator, MarkdownGenerator
+from src.api.generators import PDFGenerator, MarkdownGenerator, PPTGenerator
 
 api = FastAPI(title="V2K Sentinel API", description="Vision-to-Knowledge Universal Engine")
 
@@ -71,6 +71,16 @@ def download_md(job_id: str):
     gen = MarkdownGenerator()
     path = gen.generate(job["video_title"], job["url"], job["richness_score"], job["concepts"])
     return FileResponse(path, filename=os.path.basename(path), media_type='text/markdown')
+
+@api.get("/download/ppt/{job_id}")
+def download_ppt(job_id: str):
+    if job_id not in jobs or jobs[job_id]["status"] != "completed":
+        raise HTTPException(status_code=400, detail="Job not ready")
+    
+    job = jobs[job_id]
+    gen = PPTGenerator()
+    path = gen.generate(job["video_title"], job["url"], job["richness_score"], job["concepts"])
+    return FileResponse(path, filename=os.path.basename(path), media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
 
 if __name__ == "__main__":
     uvicorn.run(api, host="0.0.0.0", port=8000)

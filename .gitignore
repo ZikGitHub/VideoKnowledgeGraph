@@ -1,2 +1,4 @@
 .env
 venv
+
+src/api/__pycache__/generators.cpython-313.pyc

@@ -96,6 +96,48 @@ class MarkdownGenerator:
         
         return filepath
 
+class PPTGenerator:
+    """
+    Generates PowerPoint slides (PPTX) summarizing the extracted logic.
+    """
+    def __init__(self, output_dir="data/outputs"):
+        from pptx import Presentation
+        self.output_dir = output_dir
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+    def generate(self, video_title, youtube_url, richness_score, concepts):
+        from pptx import Presentation
+        from pptx.util import Inches, Pt
+        prs = Presentation()
+        
+        # Title Slide
+        title_slide_layout = prs.slide_layouts[0]
+        slide = prs.slides.add_slide(title_slide_layout)
+        title = slide.shapes.title
+        subtitle = slide.placeholders[1]
+        title.text = f"V2K Sentinel Analysis:\n{video_title}"
+        subtitle.text = f"URL: {youtube_url}\nRichness Score: {richness_score:.2f}/1.00\nGenerated: {datetime.now().strftime('%Y-%m-%d')}"
+
+        # Concept Slides
+        bullet_slide_layout = prs.slide_layouts[1]
+        for i, concept in enumerate(concepts):
+            slide = prs.slides.add_slide(bullet_slide_layout)
+            shapes = slide.shapes
+            title_shape = shapes.title
+            body_shape = shapes.placeholders[1]
+            
+            title_shape.text = f"Segment {i+1} (at {concept['timestamp']:.2f}s)"
+            
+            tf = body_shape.text_frame
+            tf.text = concept.get('synthesized_article', 'No synthesis available.')[:500] + "..." # Limit text for slide
+
+        safe_title = "".join([c for c in video_title if c.isalnum() or c in (' ', '_')]).rstrip()
+        filename = f"{safe_title}.pptx"
+        filepath = os.path.join(self.output_dir, filename)
+        prs.save(filepath)
+        return filepath
+
 if __name__ == "__main__":
     test_concepts = [
         {"timestamp": 0.0, "text": "Hello world", "synthesized_article": "Intro knowledge article content..."},
