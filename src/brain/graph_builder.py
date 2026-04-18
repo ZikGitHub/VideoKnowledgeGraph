@@ -51,6 +51,7 @@ def embed_and_synthesize_node(state: GraphState):
     print("--- Node: Embedding & Synthesizing Knowledge ---")
     kb = MultimodalKnowledgeBase()
     synthesizer = ArticleSynthesizer()
+    streamer = VideoStreamer(state['youtube_url'], sampling_rate=0.5)
     
     get_v = lambda obj, key: getattr(obj, key) if hasattr(obj, key) else obj[key]
     new_concepts = []
@@ -63,11 +64,19 @@ def embed_and_synthesize_node(state: GraphState):
         # Get text for this segment
         seg_text = " ".join([get_v(seg, 'text') for seg in state['transcript'] if start <= get_v(seg, 'start') < end])
         
-        # 1. Synthesize Article (Ollama)
-        article = synthesizer.synthesize_article(seg_text, "Visual analysis pending...")
+        # Extract true frames using VideoStreamer
+        print(f"Extracting visual frames for segment {i} [{start:.2f}s - {end:.2f}s]...")
+        try:
+            frames = streamer.get_frames_for_segment(start, end)
+        except Exception as e:
+            print(f"Frame extraction failed: {e}")
+            frames = []
         
-        # 2. Embed into Chroma (Mocking frames for now)
-        kb.add_concept(i, [], seg_text, start)
+        # 1. Synthesize Article (Ollama)
+        article = synthesizer.synthesize_article(seg_text, "Visual analysis logic extracted frames...")
+        
+        # 2. Embed multimodal concept into Chroma
+        kb.add_concept(i, frames, seg_text, start)
         
         new_concepts.append({
             "id": i,

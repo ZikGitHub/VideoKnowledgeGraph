@@ -64,6 +64,44 @@ class VideoStreamer:
 
         cap.release()
 
+    def get_frames_for_segment(self, start_time: float, end_time: float) -> list:
+        """
+        Extracts frames within a specific time segment.
+        Returns a list of NumPy array frames.
+        """
+        if not self.stream_url:
+            self._get_stream_url()
+            
+        cap = cv2.VideoCapture(self.stream_url)
+        if not cap.isOpened():
+            raise Exception("Could not open video stream.")
+            
+        # Seek to start time
+        cap.set(cv2.CAP_PROP_POS_MSEC, start_time * 1000)
+        
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        if fps == 0: fps = 30 # Fallback
+        frame_interval = int(fps / self.sampling_rate) if self.sampling_rate > 0 else 1
+        
+        frames = []
+        frame_count = 0
+        current_time = start_time
+        
+        while current_time <= end_time:
+            ret, frame = cap.read()
+            if not ret:
+                break
+                
+            if frame_count % frame_interval == 0:
+                frames.append(frame)
+                
+            frame_count += 1
+            # Recalculate based on genuine read time
+            current_time = start_time + (cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0)
+            
+        cap.release()
+        return frames
+
 if __name__ == "__main__":
     # Test with a sample video
     SAMPLE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" # Never gonna give you up

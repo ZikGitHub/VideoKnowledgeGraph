@@ -8,9 +8,15 @@ from src.ingestion.transcript_api import TranscriptFetcher
 from src.ingestion.boundary_detector import BoundaryDetector
 from src.embeddings.imagebind_wrapper import MultimodalKnowledgeBase
 import time
+import torch
 
 def run_test_pipeline(youtube_url):
     print(f"\nStarting Pipeline Test for: {youtube_url}\n" + "="*50)
+
+    device = "CUDA" if torch.cuda.is_available() else "CPU"
+    print(f"[SYSTEM] PyTorch Compute: {device}")
+    if device == "CPU":
+        print("[WARNING] GPU not detected! ImageBind and embeddings will run very slowly on CPU.\n")
 
     # 1. Fetch Transcript
     print("Step 1: Fetching Transcript...")

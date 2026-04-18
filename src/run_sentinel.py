@@ -6,9 +6,16 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.brain.graph_builder import app
 import time
+import torch
 
 def run_sentinel(youtube_url):
     print(f"\nV2K Sentinel: Starting Autonomous Knowledge Extraction")
+    print("="*60)
+    
+    device = "CUDA" if torch.cuda.is_available() else "CPU"
+    print(f"[SYSTEM] PyTorch compute device: {device}")
+    if device == "CPU":
+        print("[WARNING] GPU not detected! Falling back to CPU. Processing will be severely degraded.")
     print("="*60)
     
     inputs = {

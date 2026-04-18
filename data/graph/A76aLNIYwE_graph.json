@@ -1,0 +1,57 @@
+{
+    "video_id": "A76aLNIYwE",
+    "nodes": [
+        {
+            "id": "seg_0",
+            "label": "Segment",
+            "properties": {
+                "timestamp": 0.0,
+                "summary_preview": "# KNOWLEDGE ARTICLE: MASTER REFERENCE - LYRIC & THEMATIC ANALYSIS\n**ID:** K-ART-09452-X | **STATUS:*..."
+            }
+        },
+        {
+            "id": "seg_1",
+            "label": "Segment",
+            "properties": {
+                "timestamp": 35.133,
+                "summary_preview": "# MASTER KNOWLEDGE ARTICLE: The Urban Ghost Archive Entry\n**Reference ID:** K-ART-Horror-001  \n**Sou..."
+            }
+        },
+        {
+            "id": "seg_2",
+            "label": "Segment",
+            "properties": {
+                "timestamp": 67.7,
+                "summary_preview": "# Knowledge Article: The Lionheart / King Narrative\n**Document ID:** `KN-0921-LK`  \n**Classification..."
+            }
+        },
+        {
+            "id": "seg_3",
+            "label": "Segment",
+            "properties": {
+                "timestamp": 133.4,
+                "summary_preview": "# Knowledge Article: Narrative & Lore Architecture \u2013 \"The Decks\" (Entity Card)\n\n**Article ID:** `KLD..."
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source": "seg_0",
+            "target": "seg_1",
+            "relationship": "FOLLOWS",
+            "weight": 1.0
+        },
+        {
+            "source": "seg_1",
+            "target": "seg_2",
+            "relationship": "FOLLOWS",
+            "weight": 1.0
+        },
+        {
+            "source": "seg_2",
+            "target": "seg_3",
+            "relationship": "FOLLOWS",
+            "weight": 1.0
+        }
+    ]
+}
